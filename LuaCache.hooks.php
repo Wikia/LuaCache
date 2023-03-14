@@ -21,7 +21,7 @@ class Hooks {
 	 * @param  array &$extraLibraries Libraries to add
 	 * @return bool
 	 */
-	public static function onScribuntoExternalLibraries( $engine, array &$extraLibraries ) {
+	public function onScribuntoExternalLibraries( $engine, array &$extraLibraries ) {
 		if ( $engine === 'lua' ) {
 			$extraLibraries['mw.ext.LuaCache'] = 'LuaCache\\LuaCacheLibrary';
 		}

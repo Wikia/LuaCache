@@ -20,10 +20,13 @@
 		"LuaCache\\Hooks": "LuaCache.hooks.php",
 		"LuaCache\\LuaCacheLibrary": "LuaCache.lua.php"
 	},
-	"Hooks": {
-		"ScribuntoExternalLibraries": [
-			"LuaCache\\Hooks::onScribuntoExternalLibraries"
-		]
+	"HookHandlers": {
+		"main": {
+			"class": "LuaCache\\Hooks"
+		}
 	},
-	"manifest_version": 1
+	"Hooks": {
+		"ScribuntoExternalLibraries": "main"
+	},
+	"manifest_version": 2
 }
