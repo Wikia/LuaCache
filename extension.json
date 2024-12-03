@@ -16,9 +16,8 @@
 			"i18n"
 		]
 	},
-	"AutoloadClasses": {
-		"LuaCache\\LuaCacheHooks": "src/LuaCacheHooks.php",
-		"LuaCache\\LuaCacheLibrary": "src/LuaCacheLibrary.php"
+	"AutoloadNamespaces": {
+		"LuaCache\\": "src"
 	},
 	"HookHandlers": {
 		"main": {
