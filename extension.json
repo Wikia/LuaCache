@@ -28,5 +28,6 @@
 	"Hooks": {
 		"ScribuntoExternalLibraries": "main"
 	},
+	"ServiceWiringFiles": ["ServiceWiring.php"],
 	"manifest_version": 2
 }

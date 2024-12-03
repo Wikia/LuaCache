@@ -21,7 +21,7 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 
 	public function __construct( \Scribunto_LuaEngine $engine ) {
 		parent::__construct( $engine );
-		$this->cache = MediaWikiServices::getInstance()->getMainObjectStash();
+		$this->cache = MediaWikiServices::getInstance()->getService( 'LuaCacheStore' );
 	}
 
 	/**
