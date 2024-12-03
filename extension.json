@@ -17,12 +17,12 @@
 		]
 	},
 	"AutoloadClasses": {
-		"LuaCache\\Hooks": "LuaCache.hooks.php",
-		"LuaCache\\LuaCacheLibrary": "LuaCache.lua.php"
+		"LuaCache\\LuaCacheHooks": "src/LuaCacheHooks.php",
+		"LuaCache\\LuaCacheLibrary": "src/LuaCacheLibrary.php"
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "LuaCache\\Hooks"
+			"class": "LuaCache\\LuaCacheHooks"
 		}
 	},
 	"Hooks": {

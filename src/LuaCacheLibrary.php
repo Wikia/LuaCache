@@ -8,18 +8,19 @@
  * @package LuaCache
  * @link    https://github.com/HydraWiki/LuaCache
  *
-**/
+ */
 
 namespace LuaCache;
 
 use BagOStuff;
-use \MediaWiki\MediaWikiServices;
-use Scribunto_LuaError;
+use MediaWiki\MediaWikiServices;
+use Scribunto_LuaEngine;
+use Scribunto_LuaLibraryBase;
 
-class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
+class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	private BagOStuff $cache;
 
-	public function __construct( \Scribunto_LuaEngine $engine ) {
+	public function __construct( Scribunto_LuaEngine $engine ) {
 		parent::__construct( $engine );
 		$this->cache = MediaWikiServices::getInstance()->getService( 'LuaCacheStore' );
 	}
@@ -27,7 +28,6 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 	/**
 	 * Register the Lua extension with Scribunto
 	 *
-	 * @access public
 	 * @return array Lua package
 	 */
 	public function register() {
@@ -39,11 +39,11 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 		// Register the LuaCache package
 		return $this->getEngine()->registerInterface(
 			__DIR__ . '/mw.ext.LuaCache.lua', [
-				'get'      => [$this, 'get'],
-				'set'      => [$this, 'set'],
-				'getMulti' => [$this, 'getMulti'],
-				'setMulti' => [$this, 'setMulti'],
-				'delete'   => [$this, 'delete'],
+				'get' => [ $this, 'get' ],
+				'set' => [ $this, 'set' ],
+				'getMulti' => [ $this, 'getMulti' ],
+				'setMulti' => [ $this, 'setMulti' ],
+				'delete' => [ $this, 'delete' ],
 			]
 		);
 	}
@@ -51,9 +51,8 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 	/**
 	 * Get an item from the main object cache
 	 *
-	 * @access public
-	 * @param  string Cache key
-	 * @return array  Lua result array containing false or the string value
+	 * @param string $key Cache key
+	 * @return array Lua result array containing false or the string value
 	 */
 	public function get( $key ) {
 		$this->checkType( 'get', 1, $key, 'string' );
@@ -65,13 +64,12 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 	/**
 	 * Set an item in the main object cache
 	 *
-	 * @access public
-	 * @param  string  $key     Cache key
-	 * @param  string  $value   Cache value
-	 * @param  integer $exptime Expiration time in seconds
-	 * @return array            Lua result array containing boolean success
+	 * @param string $key Cache key
+	 * @param string $value Cache value
+	 * @param int $exptime Expiration time in seconds
+	 * @return array Lua result array containing boolean success
 	 */
-	public function set( $key, $value, $exptime ) {
+	public function set( $key, $value, $exptime ): array {
 		$this->checkType( 'set', 1, $key, 'string' );
 		$this->checkType( 'set', 2, $value, 'string' );
 		$this->checkTypeOptional( 'set', 3, $exptime, 'number', 0 );
@@ -83,11 +81,10 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 	/**
 	 * Get multiple items from the main object cache
 	 *
-	 * @access public
-	 * @param  array $keys Array of string cache keys
-	 * @return array       Lua result array containing an array of results (false or string)
+	 * @param array $keys Array of string cache keys
+	 * @return array Lua result array containing an array of results (false or string)
 	 */
-	public function getMulti( $keys ) {
+	public function getMulti( $keys ): array {
 		$this->checkType( 'getMulti', 1, $keys, 'table' );
 
 		$cacheKeys = [];
@@ -120,12 +117,11 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 	/**
 	 * Set multiple items in the main object cache
 	 *
-	 * @access public
-	 * @param  array   $data    Array of string keys => string values
-	 * @param  integer $exptime Expiration time in seconds
-	 * @return array            Lua result array containing an array of boolean results
+	 * @param array $data Array of string keys => string values
+	 * @param int $exptime Expiration time in seconds
+	 * @return array Lua result array containing an array of boolean results
 	 */
-	public function setMulti( $data, $exptime ) {
+	public function setMulti( $data, $exptime ): array {
 		$this->checkType( 'setMulti', 1, $data, 'table' );
 		$this->checkTypeOptional( 'setMulti', 2, $exptime, 'number', 0 );
 
@@ -153,11 +149,10 @@ class LuaCacheLibrary extends \Scribunto_LuaLibraryBase {
 	/**
 	 * Set multiple items in the main object cache
 	 *
-	 * @access public
-	 * @param  string $key Name of the item to delete
-	 * @return array       Lua result array containing a boolean result
+	 * @param string $key Name of the item to delete
+	 * @return array Lua result array containing a boolean result
 	 */
-	public function delete( $key ) {
+	public function delete( $key ): array {
 		$this->checkType( 'delete', 1, $key, 'string' );
 
 		$cacheKey = $this->cache->makeKey( 'LuaCache', $key );
