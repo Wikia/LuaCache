@@ -8,17 +8,16 @@
  * @package LuaCache
  * @link    https://github.com/HydraWiki/LuaCache
  *
-**/
+ */
 
 namespace LuaCache;
 
-class Hooks {
+class LuaCacheHooks {
 	/**
 	 * Hook to register the LuaCache Lua library
 	 *
-	 * @access public
-	 * @param  string $engine         Engine type
-	 * @param  array &$extraLibraries Libraries to add
+	 * @param string $engine Engine type
+	 * @param array &$extraLibraries Libraries to add
 	 * @return bool
 	 */
 	public function onScribuntoExternalLibraries( $engine, array &$extraLibraries ) {

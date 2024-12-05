@@ -16,17 +16,17 @@
 			"i18n"
 		]
 	},
-	"AutoloadClasses": {
-		"LuaCache\\Hooks": "LuaCache.hooks.php",
-		"LuaCache\\LuaCacheLibrary": "LuaCache.lua.php"
+	"AutoloadNamespaces": {
+		"LuaCache\\": "src"
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "LuaCache\\Hooks"
+			"class": "LuaCache\\LuaCacheHooks"
 		}
 	},
 	"Hooks": {
 		"ScribuntoExternalLibraries": "main"
 	},
+	"ServiceWiringFiles": ["ServiceWiring.php"],
 	"manifest_version": 2
 }
