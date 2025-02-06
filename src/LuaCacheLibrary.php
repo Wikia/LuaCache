@@ -13,11 +13,15 @@
 namespace LuaCache;
 
 use BagOStuff;
+use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LuaError;
 use MediaWiki\MediaWikiServices;
 use Scribunto_LuaEngine;
+use Scribunto_LuaError;
 use Scribunto_LuaLibraryBase;
 
 class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
+	private const CACHE_PREFIX = 'LuaCache';
+
 	private BagOStuff $cache;
 
 	public function __construct( Scribunto_LuaEngine $engine ) {
@@ -30,7 +34,7 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array Lua package
 	 */
-	public function register() {
+	public function register(): array {
 		// Register the binser package dependency
 		$this->getEngine()->registerInterface(
 			__DIR__ . '/binser.lua', []
@@ -53,11 +57,12 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @param string $key Cache key
 	 * @return array Lua result array containing false or the string value
+	 * @throws LuaError
 	 */
-	public function get( $key ) {
+	public function get( string $key ): array {
 		$this->checkType( 'get', 1, $key, 'string' );
 
-		$cacheKey = $this->cache->makeKey( 'LuaCache', $key );
+		$cacheKey = $this->cache->makeKey( self::CACHE_PREFIX, $key );
 		return [ $this->cache->get( $cacheKey ) ];
 	}
 
@@ -66,15 +71,16 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @param string $key Cache key
 	 * @param string $value Cache value
-	 * @param int $exptime Expiration time in seconds
+	 * @param int|null $exptime Expiration time in seconds
 	 * @return array Lua result array containing boolean success
+	 * @throws LuaError
 	 */
-	public function set( $key, $value, $exptime ): array {
+	public function set( string $key, string $value, ?int $exptime = 0 ): array {
 		$this->checkType( 'set', 1, $key, 'string' );
 		$this->checkType( 'set', 2, $value, 'string' );
 		$this->checkTypeOptional( 'set', 3, $exptime, 'number', 0 );
 
-		$cacheKey = $this->cache->makeKey( 'LuaCache', $key );
+		$cacheKey = $this->cache->makeKey( self::CACHE_PREFIX, $key );
 		return [ $this->cache->set( $cacheKey, $value, $exptime ) ];
 	}
 
@@ -83,8 +89,10 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @param array $keys Array of string cache keys
 	 * @return array Lua result array containing an array of results (false or string)
+	 * @throws LuaError
+	 * @throws Scribunto_LuaError
 	 */
-	public function getMulti( $keys ): array {
+	public function getMulti( array $keys ): array {
 		$this->checkType( 'getMulti', 1, $keys, 'table' );
 
 		$cacheKeys = [];
@@ -97,7 +105,7 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 				);
 			}
 
-			$cacheKey = $this->cache->makeKey( 'LuaCache', $key );
+			$cacheKey = $this->cache->makeKey( self::CACHE_PREFIX, $key );
 			$cacheKeys[] = $cacheKey;
 			$cacheKeyToKey[$cacheKey] = $key;
 		}
@@ -118,10 +126,12 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 * Set multiple items in the main object cache
 	 *
 	 * @param array $data Array of string keys => string values
-	 * @param int $exptime Expiration time in seconds
+	 * @param int|null $exptime Expiration time in seconds
 	 * @return array Lua result array containing an array of boolean results
+	 * @throws LuaError
+	 * @throws Scribunto_LuaError
 	 */
-	public function setMulti( $data, $exptime ): array {
+	public function setMulti( array $data, ?int $exptime = 0 ): array {
 		$this->checkType( 'setMulti', 1, $data, 'table' );
 		$this->checkTypeOptional( 'setMulti', 2, $exptime, 'number', 0 );
 
@@ -140,7 +150,7 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 				);
 			}
 
-			$cacheKey = $this->cache->makeKey( 'LuaCache', $key );
+			$cacheKey = $this->cache->makeKey( self::CACHE_PREFIX, $key );
 			$cacheData[$cacheKey] = $value;
 		}
 		return [ $this->cache->setMulti( $cacheData, $exptime ) ];
@@ -151,11 +161,12 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @param string $key Name of the item to delete
 	 * @return array Lua result array containing a boolean result
+	 * @throws LuaError
 	 */
-	public function delete( $key ): array {
+	public function delete( string $key ): array {
 		$this->checkType( 'delete', 1, $key, 'string' );
 
-		$cacheKey = $this->cache->makeKey( 'LuaCache', $key );
+		$cacheKey = $this->cache->makeKey( self::CACHE_PREFIX, $key );
 		return [ $this->cache->delete( $cacheKey ) ];
 	}
 }

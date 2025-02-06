@@ -7,6 +7,6 @@ return [
 	'LuaCacheStore' => static function ( MediaWikiServices $services ): BagOStuff {
 		$mainConfig = $services->getMainConfig();
 		$cacheType = $mainConfig->get( MainConfigNames::MainCacheType );
-		return ObjectCache::getInstance( $cacheType );
+		return $services->getObjectCacheFactory()->getInstance( $cacheType );
 	}
 ];
