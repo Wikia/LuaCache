@@ -21,6 +21,7 @@ use Scribunto_LuaLibraryBase;
 
 class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	private const CACHE_PREFIX = 'LuaCache';
+	private const CACHE_DEFAULT_EXPTIME = 86400; // 24h
 
 	private BagOStuff $cache;
 
@@ -75,10 +76,16 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 * @return array Lua result array containing boolean success
 	 * @throws LuaError
 	 */
-	public function set( string $key, string $value, ?int $exptime = 0 ): array {
+	public function set( string $key, string $value, ?int $exptime = self::CACHE_DEFAULT_EXPTIME ): array {
 		$this->checkType( 'set', 1, $key, 'string' );
 		$this->checkType( 'set', 2, $value, 'string' );
-		$this->checkTypeOptional( 'set', 3, $exptime, 'number', 0 );
+		$this->checkTypeOptional(
+			'set',
+			3,
+			$exptime,
+			'number',
+			self::CACHE_DEFAULT_EXPTIME
+		);
 
 		$cacheKey = $this->cache->makeKey( self::CACHE_PREFIX, $key );
 		return [ $this->cache->set( $cacheKey, $value, $exptime ) ];
@@ -131,9 +138,15 @@ class LuaCacheLibrary extends Scribunto_LuaLibraryBase {
 	 * @throws LuaError
 	 * @throws Scribunto_LuaError
 	 */
-	public function setMulti( array $data, ?int $exptime = 0 ): array {
+	public function setMulti( array $data, ?int $exptime = self::CACHE_DEFAULT_EXPTIME ): array {
 		$this->checkType( 'setMulti', 1, $data, 'table' );
-		$this->checkTypeOptional( 'setMulti', 2, $exptime, 'number', 0 );
+		$this->checkTypeOptional(
+			'setMulti',
+			2,
+			$exptime,
+			'number',
+			self::CACHE_DEFAULT_EXPTIME
+		);
 
 		$cacheData = [];
 		foreach ( $data as $key => $value ) {
